@@ -1,10 +1,17 @@
 import { useState } from 'react'
-import axios from "axios";
+import axios from 'axios';
+import TranscribedText from './components/transcribedText'
+import TranslatedText from "./components/translatedText"
+import SelectLanguage from './components/selectLanguage'
+import { ProcessResponse } from './types'
 
 function App() {
   const [urlInput, setUrlInput] = useState<string>('')
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [targetLanguage, setTargetLanguage] = useState<string>('auto')
+  const [transcribedText, setTranscribedText] = useState<string>('')
+  const [translatedText, setTranslatedText] = useState<string>('')
 
   const submitHandler = async (e: any) => {
     e.preventDefault();
@@ -13,10 +20,14 @@ function App() {
 
     const apiUrl = import.meta.env.VITE_API_URL;
     try {
-      const res = await axios.post(`${apiUrl}/process`, {
+      const res = await axios.post<ProcessResponse | null>(`${apiUrl}/process`, {
         url: urlInput,
-        target_language: 'en',
+        target_language: targetLanguage,
       });
+      if (res.data) {
+        setTranscribedText(res.data.transcribed)
+        setTranslatedText(res.data.translated)
+      }
     } catch (err: any) {
       if (axios.isAxiosError(err)) {
         const message = err.response?.data?.detail || 'An error occurred.';
@@ -31,8 +42,6 @@ function App() {
 
   return (
     <>
-
-      {/* Content */}
       <div className="h-screen flex flex-col pb-6">
         <div className="h-full flex flex-col justify-center">
           <div className="-mt-20 max-w-4xl w-full text-center mx-auto px-4 sm:px-6 lg:px-8">
@@ -43,13 +52,15 @@ function App() {
             <h1 className="text-3xl font-bold text-gray-800 sm:text-4xl">
               Welcome to Translate Engine
             </h1>
-            <p className="mt-3 text-gray-600">
+            <p className="my-3 text-gray-600">
               Your AI-powered Youtube Video Translator
             </p>
+
+            <SelectLanguage setTargetLanguage={setTargetLanguage} />
           </div>
 
 
-          <div className="mt-10 max-w-2xl w-full mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mt-6 max-w-2xl w-full mx-auto px-4 sm:px-6 lg:px-8">
             <div className="relative">
               <input
                 value={urlInput}
@@ -69,6 +80,9 @@ function App() {
             {isLoading && <span className='text-xs text-gray-600'>Generating Text...</span>}
           </div>
         </div>
+
+        <TranscribedText text={transcribedText} />
+        <TranslatedText text={translatedText} />
 
         <footer className="mt-auto max-w-4xl text-center mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-xs text-gray-600">© 2025 Hasham.live</p>
