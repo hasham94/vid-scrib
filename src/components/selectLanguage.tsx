@@ -17,7 +17,7 @@ const SelectLanguage = ({ setTargetLanguage }: SelectLanguageProps) => {
     };
 
     return (
-        <div className="relative inline-flex z-50">
+        <div className="relative inline-flex z-50 m-auto">
             <span
                 className="inline-flex divide-x divide-gray-300 overflow-hidden rounded border border-gray-300 bg-white shadow-sm "
             >
