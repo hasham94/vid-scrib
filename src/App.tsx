@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, } from 'react'
 import axios from 'axios';
 import TranscribedText from './components/transcribedText'
 import TranslatedText from "./components/translatedText"
@@ -81,8 +81,10 @@ function App() {
           </div>
         </div>
 
-        <TranscribedText text={transcribedText} />
-        <TranslatedText text={translatedText} />
+        <div className='flex gap-2 px-6 pb-4'>
+          {transcribedText && <TranscribedText text={transcribedText} />}
+          {translatedText && <TranslatedText text={translatedText} />}
+        </div>
 
         <footer className="mt-auto max-w-4xl text-center mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-xs text-gray-600">© 2025 Hasham.live</p>
